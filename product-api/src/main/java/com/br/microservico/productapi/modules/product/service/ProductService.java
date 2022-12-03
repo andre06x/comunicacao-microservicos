@@ -247,6 +247,7 @@ public class ProductService {
 
             return ProductSalesResponse.of(product, sales.getSalesId());
         }catch (Exception ex){
+            ex.printStackTrace();
             throw new ValidationExcpetion("There was an error trying to get the product's sales");
         }
     }

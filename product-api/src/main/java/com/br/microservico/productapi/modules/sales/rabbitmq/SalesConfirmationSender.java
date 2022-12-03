@@ -21,13 +21,13 @@ public class SalesConfirmationSender {
     @Value("${app-config.rabbit.routingKey.sales-confirmation}")
     private String salesConfirmationKey;
 
-    public void sendSalesConfirmationMessage(SalesConfimationDTO message){
+    public void sendSalesConfirmationMessage(SalesConfimationDTO message) {
         try {
             log.info("Sending message: {}", new ObjectMapper().writeValueAsString(message));
             rabbitTemplate.convertAndSend(productTopicExchange, salesConfirmationKey, message);
-            log.info("Message was sent successfully");
-        }catch(Exception ex){
-            log.info("Error white trying to send sales confirmation message: ", ex);
+            log.info("Message was sent successfully!");
+        } catch (Exception ex) {
+            log.info("Error while trying to send sales confirmation message: ", ex);
         }
     }
 }
