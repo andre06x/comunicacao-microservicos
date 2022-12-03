@@ -13,9 +13,10 @@ const app = express();
 const env = process.env;
 const PORT = env.PORT || 8082;
 
-connectMongoDb();
-//createInitialData();
-connectRabbitMq();
+console.log("Iniciando App");
+  connectMongoDb();
+  connectRabbitMq();
+
 
 app.use(express.json());
 app.use(checkToken);

@@ -11,14 +11,29 @@ import { RABBIT_MQ_URL } from '../constants/secrets.js';
 import { listenToSalesConfirmationQueue } from "../../modules/sales/model/rabbitmq/salesConfirmationListener.js";
 
 const TWO_SECONDS = 2000;
+const HALF_SECOND = 500;
 const HALF_MINUTE = 30000;
+const CONTAINER_ENV = "container"
 
 export async function connectRabbitMq() {
+  const env = process.env.NODE_ENV;
+  console.log(env);
+
+  if(CONTAINER_ENV === env){
+    console.info("Waiting for RabbitMQ to Start");
     connectRabbitMqAndCreateQueue();
+
+    setInterval(async () => {
+     await connectRabbitMqAndCreateQueue();
+    }, HALF_MINUTE);
+
+  } else {
+    await connectRabbitMqAndCreateQueue();
+  }
 }
 
 function connectRabbitMqAndCreateQueue() {
-  amqp.connect(RABBIT_MQ_URL, { timeout: 180000} ,(error, connection) => {
+  amqp.connect(RABBIT_MQ_URL, (error, connection) => {
     if (error) {
       throw error;
     }
@@ -41,7 +56,7 @@ function connectRabbitMqAndCreateQueue() {
 
     setTimeout(() => {
       connection.close();
-    }, TWO_SECONDS);
+    }, HALF_SECOND);
   });
 
   listenToSalesConfirmationQueue();
