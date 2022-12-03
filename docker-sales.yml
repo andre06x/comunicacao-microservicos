@@ -1,0 +1,45 @@
+version: "3"
+
+services:
+
+  sales-db:
+    image: mongo
+    container_name: sales-db
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=123456
+    ports:
+      - 27017:27017
+      - 28017:28017
+
+  sales_rabbit:
+    image: rabbitmq:3-management
+    container_name: sales_rabbit
+    hostname: sales_rabbit
+    ports:
+      - 5672:5672
+      - 25676:25676
+      - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+
+  sales-api:
+    build: './sales-api'
+    container_name: sales-api
+    depends_on:
+      sales-db:
+        condition: service_completed_successfully
+      sales_rabbit:
+        condition: service_completed_successfully
+    environment:
+      - PORT=8082
+      - API_SECRET=YXV0aC1hcGktc2VjcmV0LWNvbnRhaW5lci0xMjM0NTY=
+      - MONGO_DB_URL=mongodb://admin:123456@sales-db:27017
+      - RABBIT_MQ_URL=amqp://sales_rabbit:5672
+      - PRODUCT_API_URL=http://product-api:8081/api/product
+      - NODE_ENV=container
+    ports:
+      - 8082:8082
+

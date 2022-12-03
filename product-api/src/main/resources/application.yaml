@@ -11,9 +11,9 @@ spring:
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/product-db}
-    username: admin
-    password: 123456
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/${DB_NAME:product-db}
+    username: ${DB_USER:admin}
+    password: ${DB_PASSWORD:123456}
     initialization-mode: always
     initialize: true
     continue-on-error: true
@@ -39,7 +39,7 @@ app-config:
   services:
     sales: http://${SALES_HOST:localhost}:${SALES_PORT:8082}
   secrets:
-    api-secret: ${API_SECRET:YXV0aC1hcGktMTIzNDU2LWZvcnRlQDIyMw==}
+    api-secret: ${API_SECRET:YXV0aC1hcGktc2VjcmV0LWNvbnRhaW5lci0xMjM0NTY}
 
   rabbit:
     exchange:
